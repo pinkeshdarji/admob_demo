@@ -49,7 +49,8 @@ class _BannerInsideListState extends State<BannerInsideList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('AdMob Banner Inline Ad'),
+        title: Text('Banner Ad Inside ListView'),
+        backgroundColor: const Color(0xff764abc),
       ),
       body: ListView.builder(
         itemCount: widget.items.length + (_isBannerAdReady ? 1 : 0),

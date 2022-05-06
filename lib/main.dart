@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'ad_helper.dart';
-import 'banner_inside_list.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,17 +26,13 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: BannerInsideList(),
+      home: MyHomePage(),
       //home: const MyHomePage(title: 'AdMob Demo'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -46,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static final AdRequest request = AdRequest();
 
   int maxFailedLoadAttempts = 3;
-
+  int life = 0;
   late BannerAd _bannerAd;
   bool _isBannerAdReady = false;
 
@@ -70,7 +65,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Ads creation starts here
   void _loadBannerAd() {
-    // COMPLETE: Initialize _bannerAd
     _bannerAd = BannerAd(
       adUnitId: AdHelper.bannerAdUnitId,
       request: AdRequest(),
@@ -82,7 +76,6 @@ class _MyHomePageState extends State<MyHomePage> {
           });
         },
         onAdFailedToLoad: (ad, err) {
-          print('Failed to load a banner ad: ${err.message}');
           _isBannerAdReady = false;
           ad.dispose();
         },
@@ -203,7 +196,9 @@ class _MyHomePageState extends State<MyHomePage> {
     _rewardedAd!.setImmersiveMode(true);
     _rewardedAd!.show(
         onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
-      print('$ad with reward $RewardItem(${reward.amount}, ${reward.type})');
+      setState(() {
+        life += 1;
+      });
     });
     _rewardedAd = null;
   }
@@ -251,7 +246,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('AdMob Demo'),
         backgroundColor: const Color(0xff764abc),
       ),
       body: Stack(
@@ -260,6 +255,24 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Life',
+                      style: TextStyle(fontSize: 30),
+                    ),
+                    Icon(
+                      Icons.favorite,
+                      size: 30,
+                      color: Colors.redAccent,
+                    ),
+                    Text(
+                      '$life',
+                      style: TextStyle(fontSize: 30),
+                    ),
+                  ],
+                ),
                 ElevatedButton(
                   onPressed: () {
                     _showInterstitialAd();
@@ -278,15 +291,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: TextStyle(fontSize: 30),
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    _showRewardedInterstitialAd();
-                  },
-                  child: Text(
-                    'RewardedInterstitialAd',
-                    style: TextStyle(fontSize: 30),
-                  ),
-                ),
+                // ElevatedButton(
+                //   onPressed: () {
+                //     _showRewardedInterstitialAd();
+                //   },
+                //   child: Text(
+                //     'RewardedInterstitialAd',
+                //     style: TextStyle(fontSize: 30),
+                //   ),
+                // ),
               ],
             ),
           ),
